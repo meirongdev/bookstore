@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: changelog/changes/v1.0.0-initial-schema.yaml
+  - include:
+      file: changelog/changes/v1.1.0-add-indexes.yaml
+  - include:
+      file: changelog/changes/v1.0.1-seed-data.yaml

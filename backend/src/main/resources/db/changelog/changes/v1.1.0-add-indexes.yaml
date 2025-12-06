@@ -1,0 +1,171 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10-add-users-indexes
+      author: meirong
+      changes:
+        - createIndex:
+            indexName: idx_users_email
+            tableName: users
+            columns:
+              - column:
+                  name: email
+        - createIndex:
+            indexName: idx_users_role
+            tableName: users
+            columns:
+              - column:
+                  name: role
+      rollback:
+        - dropIndex:
+            indexName: idx_users_email
+            tableName: users
+        - dropIndex:
+            indexName: idx_users_role
+            tableName: users
+
+  - changeSet:
+      id: 11-add-books-indexes
+      author: meirong
+      changes:
+        - createIndex:
+            indexName: idx_books_title
+            tableName: books
+            columns:
+              - column:
+                  name: title
+        - createIndex:
+            indexName: idx_books_author
+            tableName: books
+            columns:
+              - column:
+                  name: author
+      rollback:
+        - dropIndex:
+            indexName: idx_books_title
+            tableName: books
+        - dropIndex:
+            indexName: idx_books_author
+            tableName: books
+
+  - changeSet:
+      id: 12-add-checkouts-indexes
+      author: meirong
+      changes:
+        - createIndex:
+            indexName: idx_checkouts_user_email
+            tableName: checkouts
+            columns:
+              - column:
+                  name: user_email
+        - createIndex:
+            indexName: idx_checkouts_book_id
+            tableName: checkouts
+            columns:
+              - column:
+                  name: book_id
+        - createIndex:
+            indexName: idx_checkouts_return_date
+            tableName: checkouts
+            columns:
+              - column:
+                  name: return_date
+      rollback:
+        - dropIndex:
+            indexName: idx_checkouts_user_email
+            tableName: checkouts
+        - dropIndex:
+            indexName: idx_checkouts_book_id
+            tableName: checkouts
+        - dropIndex:
+            indexName: idx_checkouts_return_date
+            tableName: checkouts
+
+  - changeSet:
+      id: 13-add-reviews-indexes
+      author: meirong
+      changes:
+        - createIndex:
+            indexName: idx_reviews_book_id
+            tableName: reviews
+            columns:
+              - column:
+                  name: book_id
+        - createIndex:
+            indexName: idx_reviews_user_email
+            tableName: reviews
+            columns:
+              - column:
+                  name: user_email
+        - createIndex:
+            indexName: idx_reviews_created_at
+            tableName: reviews
+            columns:
+              - column:
+                  name: created_at
+      rollback:
+        - dropIndex:
+            indexName: idx_reviews_book_id
+            tableName: reviews
+        - dropIndex:
+            indexName: idx_reviews_user_email
+            tableName: reviews
+        - dropIndex:
+            indexName: idx_reviews_created_at
+            tableName: reviews
+
+  - changeSet:
+      id: 14-add-book-loan-histories-indexes
+      author: meirong
+      changes:
+        - createIndex:
+            indexName: idx_book_loan_histories_user_email
+            tableName: book_loan_histories
+            columns:
+              - column:
+                  name: user_email
+        - createIndex:
+            indexName: idx_book_loan_histories_book_id
+            tableName: book_loan_histories
+            columns:
+              - column:
+                  name: book_id
+        - createIndex:
+            indexName: idx_book_loan_histories_status
+            tableName: book_loan_histories
+            columns:
+              - column:
+                  name: status
+      rollback:
+        - dropIndex:
+            indexName: idx_book_loan_histories_user_email
+            tableName: book_loan_histories
+        - dropIndex:
+            indexName: idx_book_loan_histories_book_id
+            tableName: book_loan_histories
+        - dropIndex:
+            indexName: idx_book_loan_histories_status
+            tableName: book_loan_histories
+
+  - changeSet:
+      id: 15-add-discussions-indexes
+      author: meirong
+      changes:
+        - createIndex:
+            indexName: idx_discussions_user_email
+            tableName: discussions
+            columns:
+              - column:
+                  name: user_email
+        - createIndex:
+            indexName: idx_discussions_closed
+            tableName: discussions
+            columns:
+              - column:
+                  name: closed
+      rollback:
+        - dropIndex:
+            indexName: idx_discussions_user_email
+            tableName: discussions
+        - dropIndex:
+            indexName: idx_discussions_closed
+            tableName: discussions

@@ -1,0 +1,107 @@
+services:
+  postgres:
+    container_name: bookstore-postgresql-db-container
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bookstoreadmin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bookstoreadmin}
+      POSTGRES_DB: ${POSTGRES_DB:-bookstore_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - bookstore_postgres:/var/lib/postgresql/data
+    networks:
+      - bookstore-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bookstoreadmin} -d ${POSTGRES_DB:-bookstore_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  bookstore-springboot-backend:
+    image: meirongdev/bookstore-backend:local
+    pull_policy: never
+    container_name: bookstore-springboot-backend-container
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-bookstore_db}
+      POSTGRES_USER: ${POSTGRES_USER:-bookstoreadmin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bookstoreadmin}
+      JWT_SECRET: ${JWT_SECRET}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+    networks:
+      - bookstore-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      # liquibase:
+      #   condition: service_completed_successfully
+
+  # One-off Liquibase migration service. Run with: `make migrate` or `docker compose run --rm liquibase`
+  # Note: This service uses profiles to prevent auto-start with `docker compose up`
+  liquibase:
+    image: liquibase/liquibase:5.0.1
+    container_name: bookstore-liquibase
+    profiles:
+      - tools
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/src/main/resources/db/changelog:/liquibase/changelog:ro
+      # Mount any JDBC driver jars placed under ./backend/lib into the
+      # container. Place a file named `postgresql.jar` (or symlink) there so
+      # the --classpath below can reference it.
+      - ./backend/lib:/liquibase/drivers:ro
+    entrypoint: ["liquibase"]
+    command:
+      - --url=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-bookstore_db}
+      - --changeLogFile=changelog/db.changelog-master.yaml
+      - --username=${POSTGRES_USER:-bookstoreadmin}
+      - --password=${POSTGRES_PASSWORD:-bookstoreadmin}
+      - --classpath=/liquibase/drivers/postgresql.jar
+      - update
+    networks:
+      - bookstore-network
+
+  # Production frontend: use prebuilt image serving static files (nginx)
+  bookstore-react-frontend:
+    image: meirongdev/bookstore-frontend:local
+    pull_policy: never
+    container_name: bookstore-react-frontend-container
+    environment:
+      - BACKEND_URL=${BACKEND_URL:-http://bookstore-springboot-backend-container:8080}
+    ports:
+      - "8000:80"
+    networks:
+      - bookstore-network
+    depends_on:
+      - bookstore-springboot-backend
+
+  # Development frontend (hot-reload). Only started when --profile dev is used.
+  bookstore-react-frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: bookstore-frontend:dev
+    container_name: bookstore-react-frontend-dev
+    profiles:
+      - dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - bookstore-network
+    depends_on:
+      - bookstore-springboot-backend
+
+volumes:
+  bookstore_postgres:
+
+networks:
+  bookstore-network:
+    driver: bridge

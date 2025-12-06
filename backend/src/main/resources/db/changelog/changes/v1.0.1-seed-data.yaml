@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10-seed-initial-data
+      author: meirong
+      changes:
+        - sql:
+            sql: |-
+              -- Insert default admin user (idempotent using ON CONFLICT)
+              insert into users (id, first_name, last_name, date_of_birth, email, password, role, registered_at) values (1, 'Admin', 'Admin', '2000-01-01', 'admin@email.com', '$2a$10$rW7AN0KxM4scb/65mKRLsulYZcMNOn3HynGSjSPjLA.9D5eQuQYk.', 'ROLE_ADMIN', '2023-11-23 13:23:05.262') on conflict do nothing;
+
+
+              -- Insert default genres
+              insert into genres (id, description) values (1, 'Science Fiction') on conflict do nothing;
+              insert into genres (id, description) values (2, 'Fantasy') on conflict do nothing;
+              insert into genres (id, description) values (3, 'Adventure') on conflict do nothing;
+      rollback:
+        - sql:
+            sql: |-
+              -- Rollback seed data: delete inserted rows if present
+              delete from users where id = 1 and email = 'admin@email.com';
+              delete from genres where id in (1,2,3);
