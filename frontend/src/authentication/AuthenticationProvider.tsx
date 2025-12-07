@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { LoginModel } from "../models/LoginModel";
-import { useLogin } from "../utils/api_fetchers/authentication_controller/useLogin";
+import { loginUser } from "../utils/api_fetchers/authentication_controller/loginUser";
 import { AuthenticationContext } from "./authenticationContext";
 import { useAuthenticationState } from "./useAuthenticationState";
 import { RegistrationModel } from "../models/RegistrationModel";
-import { useRegister } from "../utils/api_fetchers/authentication_controller/useRegister";
+import { registerUser } from "../utils/api_fetchers/authentication_controller/registerUser";
 
 /**
  * Extract user email from JWT token
@@ -45,40 +45,47 @@ export const AuthenticationProvider = ({ children }: AuthenticationProviderProps
         userEmail: authenticationState.token ? extractUserEmailFromToken(authenticationState.token) : ""
     };
 
-    const [authentication, setAuthenticationState] = useState(initState);
+    const [authentication, setAuthentication] = useState(initState);
 
     const setAuthenticationWithEmail = (newAuth: any) => {
         const authWithEmail = {
             ...newAuth,
             userEmail: newAuth.token ? extractUserEmailFromToken(newAuth.token) : ""
         };
-        setAuthenticationState(authWithEmail);
+        setAuthentication(authWithEmail);
     };
 
     const register = async (userDetails: RegistrationModel,
                             setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
                             setHttpError: React.Dispatch<React.SetStateAction<string | null>>) => {
 
-        await useRegister(userDetails, setIsLoading, setHttpError, setAuthenticationWithEmail);
+        await registerUser(userDetails, setIsLoading, setHttpError, setAuthenticationWithEmail);
     };
 
     const login = async (userDetails: LoginModel,
                          setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
                          setHttpError: React.Dispatch<React.SetStateAction<string | null>>) => {
 
-        await useLogin(userDetails, setIsLoading, setHttpError, setAuthenticationWithEmail);
+        await loginUser(userDetails, setIsLoading, setHttpError, setAuthenticationWithEmail);
     }
 
     const logout = () => {
 
         const logoutState = { isAuthenticated: false, token: "", authority: "", userEmail: "" };
-        setAuthenticationState(logoutState);
+        setAuthentication(logoutState);
         localStorage.setItem("authenticationState", JSON.stringify(logoutState));
     }
 
+    const contextValue = useMemo(() => ({
+        authentication,
+        register,
+        login,
+        logout
+    }), [authentication]);
+
     return (
 
-        <AuthenticationContext.Provider value={{ authentication, register, login, logout }}>
+        <AuthenticationContext.Provider value={contextValue}>
 
             {children}
 

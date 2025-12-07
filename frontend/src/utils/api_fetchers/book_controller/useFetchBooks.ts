@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BookModel } from "../../../models/BookModel";
 import { book_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchBooks = (currentPage: number,
                               setBooks: React.Dispatch<React.SetStateAction<BookModel[]>>,
@@ -21,13 +22,13 @@ export const useFetchBooks = (currentPage: number,
                 setIsLoading(true);
 
                 const searchParams = urlSearchParams ? (urlSearchParams + "&") : "?";
-                const paginationParams = `page=${currentPage - 1}&books-per-page=${booksPerPage ? booksPerPage : 9}`;
+                const paginationParams = `page=${currentPage - 1}&books-per-page=${booksPerPage ?? 9}`;
                 const urlParams = searchParams + paginationParams;
 
                 const find_all_endpoint = book_controller_endpoints.find_all_books;
                 const search_by_title_endpoint = book_controller_endpoints.search_by_title;
                 const search_by_genre_endpoint = book_controller_endpoints.search_by_genre;
-                
+
                 let url: string;
 
                 if (searchParams.includes("genre-query")) {
@@ -37,13 +38,13 @@ export const useFetchBooks = (currentPage: number,
                 } else if (searchParams.includes("title-query")) {
 
                     url = search_by_title_endpoint.url + urlParams;
-                    
+
                 } else {
 
                     url = find_all_endpoint.url + urlParams;
                 }
 
-                const response = await fetch(url);
+                const response = await fetchWithRequestId(url);
 
                 const responseJson = await response.json();
 

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { book_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useCheckIfBookCheckedOutByUser = (bookId: string,
                                                authentication: { isAuthenticated: boolean; token: string; },
@@ -30,7 +31,7 @@ export const useCheckIfBookCheckedOutByUser = (bookId: string,
                         }
                     };
 
-                    const response = await fetch(url, requestOptions);
+                    const response = await fetchWithRequestId(url, requestOptions);
 
                     const responseJson = await response.json();
 

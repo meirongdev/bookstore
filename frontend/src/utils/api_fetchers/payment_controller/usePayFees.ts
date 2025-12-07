@@ -1,9 +1,9 @@
 import { CardElement } from "@stripe/react-stripe-js";
-import type { Stripe } from "@stripe/stripe-js";
-import type { StripeElements } from "@stripe/stripe-js";
+import type { Stripe, StripeElements } from "@stripe/stripe-js";
 import { jwtDecode } from "jwt-decode";
 import { PaymentInfoModel } from "../../../models/PaymentInfoModel";
 import { payment_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const usePayFees = async (authentication: { isAuthenticated: boolean; token: string;  authority: string; },
                                  elements: StripeElements | null,
@@ -15,7 +15,7 @@ export const usePayFees = async (authentication: { isAuthenticated: boolean; tok
 
     const submitPayFees = async () => {
 
-        if (!stripe || !elements || !elements.getElement(CardElement)) {
+        if (!stripe || !elements?.getElement(CardElement)) {
             return;
         }
 
@@ -43,7 +43,7 @@ export const usePayFees = async (authentication: { isAuthenticated: boolean; tok
                 body: JSON.stringify(paymentInfo)
             };
 
-            const response = await fetch(url, requestOptions);
+            const response = await fetchWithRequestId(url, requestOptions);
 
             const responseJson = await response.json();
 
@@ -89,7 +89,7 @@ export const usePayFees = async (authentication: { isAuthenticated: boolean; tok
                             }
                         };
 
-                        const response = await fetch(url, requestOptions);
+                        const response = await fetchWithRequestId(url, requestOptions);
 
                         if (!response.ok) {
                             throw new Error(responseJson.message);

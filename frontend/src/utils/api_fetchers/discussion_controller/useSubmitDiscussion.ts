@@ -1,5 +1,6 @@
 import { DiscussionModel } from "../../../models/DiscussionModel";
 import { discussion_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useSubmitDiscussion = async (authentication: { isAuthenticated: boolean; token: string; },
                                           discussionModel: DiscussionModel,
@@ -28,7 +29,7 @@ export const useSubmitDiscussion = async (authentication: { isAuthenticated: boo
                 body: JSON.stringify(discussionModel)
             };
 
-            const response = await fetch(url, requestOptions);
+            const response = await fetchWithRequestId(url, requestOptions);
 
             const responseJson = await response.json();
 

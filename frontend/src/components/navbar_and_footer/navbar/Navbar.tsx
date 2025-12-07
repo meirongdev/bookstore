@@ -13,51 +13,49 @@ export const Navbar = () => {
 
     return (
 
-        <header className="bg-white border-b border-gray-200 z-10 w-full h-[60px] fixed top-0 left-0 right-0">
+        <header className="bg-gray-900 border-b border-gray-700 z-10 w-full h-[60px] fixed top-0 left-0 right-0">
 
             <div className="container-centered h-full">
                 <nav className="flex justify-between items-center h-full">
 
-                    <NavLink to="/" className="font-semibold text-lg text-gray-800">
+                    <NavLink to="/" className="font-semibold text-lg text-white">
                         BookStore
                     </NavLink>
 
                 <div className={`${!hamburgerMenuClicked && "max-lg:hidden"} nav-menu`}>
 
-                    {navLinks.map(
+                    {navLinks.map((link) => {
+                        let shouldRender = false;
+                        if (link.authRequired) {
+                            if (authentication.isAuthenticated) {
+                                if (link.adminOnly) {
+                                    shouldRender = authentication.authority === "ROLE_ADMIN";
+                                } else {
+                                    shouldRender = true;
+                                }
+                            }
+                        } else {
+                            shouldRender = true;
+                        }
 
-                        (link) => (
+                        if (!shouldRender) return null;
 
-                            link.authRequired ? authentication.isAuthenticated && (
-
-                                link.adminOnly ? authentication.authority === "ROLE_ADMIN" &&
-
-                                <NavLink key={link.id} className={({ isActive }) => (isActive ? "nav-link-active" : "nav-link")} to={link.href} onClick={() => setHamburgerMenuClicked(false)}>
-                                    {link.title}
-                                </NavLink>
-
-                                :
-
-                                <NavLink key={link.id} className={({ isActive }) => (isActive ? "nav-link-active" : "nav-link")} to={link.href} onClick={() => setHamburgerMenuClicked(false)}>
-                                    {link.title}
-                                </NavLink>
-
-                            )
-
-                            :
-
-                            <NavLink key={link.id} className={({ isActive }) => (isActive ? "nav-link-active" : "nav-link")} to={link.href} onClick={() => setHamburgerMenuClicked(false)}>
+                        return (
+                            <NavLink
+                                key={link.id}
+                                className={({ isActive }) => (isActive ? "nav-link-active" : "nav-link")}
+                                to={link.href}
+                                onClick={() => setHamburgerMenuClicked(false)}
+                            >
                                 {link.title}
                             </NavLink>
+                        );
+                    })}
 
-                        )
-
-                    )}
-
-                    {!authentication.isAuthenticated ?
-                        <Link to={"/login"} className="btn-secondary lg:hidden mt-2" onClick={() => setHamburgerMenuClicked(false)}>Sign In</Link>
-                        :
+                    {authentication.isAuthenticated ?
                         <button className="btn-secondary lg:hidden mt-2" onClick={logout}>Log out</button>
+                        :
+                        <Link to={"/login"} className="btn-secondary lg:hidden mt-2" onClick={() => setHamburgerMenuClicked(false)}>Sign In</Link>
                     }
 
                 </div>

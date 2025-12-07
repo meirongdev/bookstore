@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { review_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchBookAverageRating = (bookId: string,
                                           setAverageRating: React.Dispatch<React.SetStateAction<number>>,
@@ -19,7 +20,7 @@ export const useFetchBookAverageRating = (bookId: string,
                 
                 const url = endpoint.url + urlParams;
 
-                const response = await fetch(url);
+                const response = await fetchWithRequestId(url);
 
                 const responseJson = await response.json();
 

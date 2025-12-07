@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { payment_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 /**
  * Custom hook to fetch pending payment amount for the authenticated user
@@ -28,7 +29,7 @@ export const useFetchPendingAmount = (
                 };
 
                 try {
-                    const response = await fetch(url, requestOptions);
+                    const response = await fetchWithRequestId(url, requestOptions);
 
                     if (!response.ok) {
                         const errorData = await response.json();

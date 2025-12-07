@@ -5,7 +5,7 @@ import { useFetchPendingAmount } from "../../../utils/api_fetchers/payment_contr
 import { LoadingSpinner } from "../../commons/loading_spinner/LoadingSpinner";
 import { HttpErrorMessage } from "../../commons/http_error_message/HttpErrorMessage";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useProcessPayment } from "../../../utils/api_fetchers/payment_controller/useProcessPayment";
+import { useProcessPayment as processPayment } from "../../../utils/api_fetchers/payment_controller/useProcessPayment";
 import { FormLoader } from "../../commons/form_loader/FormLoader";
 
 export const PaymentPage = () => {
@@ -28,7 +28,7 @@ export const PaymentPage = () => {
     }
 
     const handlePayClick = async () => {
-        await useProcessPayment(
+        await processPayment(
             authentication,
             elements,
             stripe,

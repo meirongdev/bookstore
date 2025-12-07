@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { GenreModel } from "../../../models/GenreModel";
 import { genre_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchAllGenres = (setAllGenres: React.Dispatch<React.SetStateAction<GenreModel[]>>,
                                   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -16,7 +17,7 @@ export const useFetchAllGenres = (setAllGenres: React.Dispatch<React.SetStateAct
 
                 const url = endpoint.url;
 
-                const response = await fetch(url);
+                const response = await fetchWithRequestId(url);
 
                 const responseJson = await response.json();
 

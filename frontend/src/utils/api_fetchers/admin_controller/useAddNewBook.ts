@@ -1,5 +1,6 @@
 import { BookModel } from "../../../models/BookModel";
 import { admin_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const addNewBook= async (authentication: { isAuthenticated: boolean; token: string; },
                                    bookModel: BookModel,
@@ -28,7 +29,7 @@ export const addNewBook= async (authentication: { isAuthenticated: boolean; toke
                 body: JSON.stringify(bookModel)
             };
 
-            const response = await fetch(url, requestOptions);
+            const response = await fetchWithRequestId(url, requestOptions);
 
             const responseJson = await response.json();
 

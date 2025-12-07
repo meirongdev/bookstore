@@ -1,4 +1,5 @@
 import { admin_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useDeleteBook= async (bookId: string,
                                    authentication: { isAuthenticated: boolean; token: string; },
@@ -27,7 +28,7 @@ export const useDeleteBook= async (bookId: string,
                 }
             };
 
-            const response = await fetch(url, requestOptions);
+            const response = await fetchWithRequestId(url, requestOptions);
 
             if (!response.ok) {
                 

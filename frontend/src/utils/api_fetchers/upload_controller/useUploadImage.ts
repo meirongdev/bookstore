@@ -1,5 +1,6 @@
 import { useAuthenticationContext } from "../../../authentication/authenticationContext";
 import { upload_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useUploadImage = () => {
     const { authentication } = useAuthenticationContext();
@@ -18,7 +19,7 @@ export const useUploadImage = () => {
             body: formData,
         };
 
-        const response = await fetch(url, requestOptions);
+        const response = await fetchWithRequestId(url, requestOptions);
 
         if (!response.ok) {
             const errorText = await response.text();

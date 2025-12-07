@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BookModel } from "../../../models/BookModel";
 import { book_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchBook = (bookId: string,
                              setBook: React.Dispatch<React.SetStateAction<BookModel>>,
@@ -19,7 +20,7 @@ export const useFetchBook = (bookId: string,
                 
                 const url = endpoint.url + urlParams;
 
-                const response = await fetch(url);
+                const response = await fetchWithRequestId(url);
 
                 const responseJson = await response.json();
 

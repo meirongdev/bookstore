@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { checkout_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchCurrentCheckoutsCount = (authentication: { isAuthenticated: boolean; token: string; },
                                               setCurrentCheckoutsCount: React.Dispatch<React.SetStateAction<number>>,
@@ -27,7 +28,7 @@ export const useFetchCurrentCheckoutsCount = (authentication: { isAuthenticated:
                         }
                     };
 
-                    const response = await fetch(url, requestOptions);
+                    const response = await fetchWithRequestId(url, requestOptions);
 
                     const responseJson = await response.json();
 

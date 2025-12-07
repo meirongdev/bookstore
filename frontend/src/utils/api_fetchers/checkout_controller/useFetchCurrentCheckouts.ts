@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { CheckoutModel } from "../../../models/CheckoutModel";
 import { checkout_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchCurrentCheckouts = (authentication: { isAuthenticated: boolean; token: string; },
                                          setCurrentCheckouts: React.Dispatch<React.SetStateAction<CheckoutModel[]>>,
@@ -32,7 +33,7 @@ export const useFetchCurrentCheckouts = (authentication: { isAuthenticated: bool
                         }
                     };
 
-                    const response = await fetch(url, requestOptions);
+                    const response = await fetchWithRequestId(url, requestOptions);
 
                     const responseJson = await response.json();
 

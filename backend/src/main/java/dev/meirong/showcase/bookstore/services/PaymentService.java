@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service class for handling payment operations with Stripe integration
@@ -144,7 +143,7 @@ public class PaymentService {
         List<Payment> payments = paymentRepository.findByPaymentHolderEmail(userEmail);
         return payments.stream()
                 .map(entityMapper::toPaymentDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -189,7 +188,7 @@ public class PaymentService {
                     .setReason(RefundCreateParams.Reason.REQUESTED_BY_CUSTOMER)
                     .build();
 
-            Refund refund = Refund.create(params);
+            Refund.create(params);
 
             // Update payment status
             payment.setStatus(PaymentStatus.REFUNDED);

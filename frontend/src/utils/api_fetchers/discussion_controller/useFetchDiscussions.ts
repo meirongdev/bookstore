@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { DiscussionModel } from "../../../models/DiscussionModel";
 import { discussion_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchDiscussions = (authentication: { isAuthenticated: boolean; token: string; },
                                     setDiscussions: React.Dispatch<React.SetStateAction<DiscussionModel[]>>,
@@ -35,7 +36,7 @@ export const useFetchDiscussions = (authentication: { isAuthenticated: boolean; 
                         }
                     };
 
-                    const response = await fetch(url, requestOptions);
+                    const response = await fetchWithRequestId(url, requestOptions);
 
                     const responseJson = await response.json();
 

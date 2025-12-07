@@ -5,7 +5,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import dev.meirong.showcase.bookstore.githubcdn.config.GithubCdnProperties;
 import dev.meirong.showcase.bookstore.githubcdn.dto.UploadResponse;
 import dev.meirong.showcase.bookstore.githubcdn.services.GithubUploaderService;
 import io.swagger.v3.oas.annotations.Operation;

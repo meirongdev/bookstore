@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { ReviewModel } from "../../../models/ReviewModel";
 import { review_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchBookReviews = (bookId: string,
                                     setReviews: React.Dispatch<React.SetStateAction<ReviewModel[]>>,
@@ -23,7 +24,7 @@ export const useFetchBookReviews = (bookId: string,
 
                 const url = endpoint.url + urlParams;
 
-                const response = await fetch(url);
+                const response = await fetchWithRequestId(url);
 
                 const responseJson = await response.json();
 

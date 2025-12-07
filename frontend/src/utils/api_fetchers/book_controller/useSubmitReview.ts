@@ -1,5 +1,6 @@
 import { ReviewModel } from "../../../models/ReviewModel";
 import { book_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useSubmitReview = async (bookId: string,
                                       authentication: { isAuthenticated: boolean; token: string; },
@@ -31,7 +32,7 @@ export const useSubmitReview = async (bookId: string,
                 body: JSON.stringify(review)
             };
 
-            const response = await fetch(url, requestOptions);
+            const response = await fetchWithRequestId(url, requestOptions);
 
             const responseJson = await response.json();
 

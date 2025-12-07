@@ -9,7 +9,6 @@ import dev.meirong.showcase.bookstore.repositories.GenreRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class GenreService {
 
     public List<GenreDTO> findAll() {
 
-        return genreRepository.findAll().stream().map(this::convertToGenreDTO).collect(Collectors.toList());
+        return genreRepository.findAll().stream().map(this::convertToGenreDTO).toList();
     }
 
     private GenreDTO convertToGenreDTO(Genre genre) {

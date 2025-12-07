@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BookLoanModel } from "../../../models/BookLoanModel";
 import { book_loan_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 /**
  * Custom hook to fetch user's book borrowing history (book loans).
@@ -41,7 +42,7 @@ export const useFetchBookLoans = (
                         }
                     };
 
-                    const response = await fetch(url, requestOptions);
+                    const response = await fetchWithRequestId(url, requestOptions);
 
                     const responseJson = await response.json();
 

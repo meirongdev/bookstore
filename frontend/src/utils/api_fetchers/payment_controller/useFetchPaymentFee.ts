@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { payment_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 export const useFetchPaymentFee = (authentication: { isAuthenticated: boolean; token: string; },
                                    setPaymentFees: React.Dispatch<React.SetStateAction<number>>,
@@ -29,7 +30,7 @@ export const useFetchPaymentFee = (authentication: { isAuthenticated: boolean; t
                         }
                     };
 
-                    const response = await fetch(url, requestOptions);
+                    const response = await fetchWithRequestId(url, requestOptions);
 
                     const responseJson = await response.json();
 

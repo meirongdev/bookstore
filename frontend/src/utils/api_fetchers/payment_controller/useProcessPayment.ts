@@ -1,6 +1,7 @@
 import type { Stripe, StripeElements } from "@stripe/stripe-js";
 import type { CreatePaymentIntentRequest, CreatePaymentIntentResponse } from "../../../models/PaymentModel";
 import { payment_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 /**
  * Extract user email from JWT token
@@ -58,7 +59,7 @@ export const useProcessPayment = async (
         };
 
         const createEndpoint = payment_controller_endpoints.create_payment_intent;
-        const createResponse = await fetch(createEndpoint.url, {
+        const createResponse = await fetchWithRequestId(createEndpoint.url, {
             method: createEndpoint.method,
             headers: {
                 Authorization: `Bearer ${authentication.token}`,
@@ -94,7 +95,7 @@ export const useProcessPayment = async (
         if (paymentIntent?.status === "succeeded") {
             // Step 3: Confirm payment with backend
             const confirmEndpoint = payment_controller_endpoints.confirm_payment;
-            const confirmResponse = await fetch(confirmEndpoint.url, {
+            const confirmResponse = await fetchWithRequestId(confirmEndpoint.url, {
                 method: confirmEndpoint.method,
                 headers: {
                     Authorization: `Bearer ${authentication.token}`,

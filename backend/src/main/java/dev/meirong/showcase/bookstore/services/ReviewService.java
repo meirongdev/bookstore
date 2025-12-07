@@ -53,6 +53,7 @@ public class ReviewService {
 
         if (book.isEmpty()) {
             ErrorsUtil.returnBookError("Book not found", null, HttpStatus.NOT_FOUND);
+            return null;
         }
 
         return book.get();

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { PaymentModel } from "../../../models/PaymentModel";
 import { payment_controller_endpoints } from "../../apiEndpointsUrlsList";
+import { fetchWithRequestId } from "../../fetchWithRequestId";
 
 /**
  * Custom hook to fetch user's payment history
@@ -29,7 +30,7 @@ export const useFetchUserPayments = (
                 };
 
                 try {
-                    const response = await fetch(url, requestOptions);
+                    const response = await fetchWithRequestId(url, requestOptions);
 
                     if (!response.ok) {
                         const errorData = await response.json();

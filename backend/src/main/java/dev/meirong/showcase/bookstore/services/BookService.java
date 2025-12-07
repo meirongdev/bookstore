@@ -72,8 +72,9 @@ public class BookService {
 
         Optional<Genre> genre = genreRepository.findByDescription(genreQuery);
 
-        if (genre.isEmpty()) {
+        if (!genre.isPresent()) {
             ErrorsUtil.returnGenreError("No such genre found", null, HttpStatus.NOT_FOUND);
+            return Page.empty(pageable); // Ensure method returns if genre not found
         }
 
         return bookRepository.findByGenresContains(genre.get(), PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()))
@@ -110,8 +111,7 @@ public class BookService {
 
         Book book = getBookFromRepository(bookId);
 
-        if (operation.equals("increase")) {
-
+        if (operation.equals("increase") && book != null) {
             book.setCopiesAvailable(book.getCopiesAvailable() + 1);
             book.setCopies(book.getCopies() + 1);
             bookRepository.save(book);
@@ -119,13 +119,15 @@ public class BookService {
 
         if (operation.equals("decrease")) {
 
-            if (book.getCopiesAvailable() <= 0 || book.getCopies() <= 0) {
+            if (book == null || book.getCopiesAvailable() <= 0 || book.getCopies() <= 0) {
                 ErrorsUtil.returnBookError("Book quantity is already 0", null, HttpStatus.FORBIDDEN);
             }
 
-            book.setCopiesAvailable(book.getCopiesAvailable() - 1);
-            book.setCopies(book.getCopies() - 1);
-            bookRepository.save(book);
+            if (book != null) {
+                book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+                book.setCopies(book.getCopies() - 1);
+                bookRepository.save(book);
+            }
         }
     }
 
@@ -145,7 +147,7 @@ public class BookService {
         Book book = getBookFromRepository(bookId);
         Optional<Checkout> checkout = getCheckoutOptionalFromRepository(user, book);
 
-        if (book.getCopiesAvailable() <= 0 || book.getCopies() <= 0) {
+        if (book == null || book.getCopiesAvailable() <= 0 || book.getCopies() <= 0) {
             ErrorsUtil.returnBookError("Book quantity is already 0", null, HttpStatus.FORBIDDEN);
         }
 
@@ -176,9 +178,11 @@ public class BookService {
         Checkout newCheckout = new Checkout(user, book, LocalDate.now(), LocalDate.now().plusDays(7));
         checkoutRepository.save(newCheckout);
 
-        book.setCopiesAvailable(book.getCopiesAvailable() - 1);
-        book.getCheckouts().add(newCheckout);
-        bookRepository.save(book);
+        if (book != null) {
+            book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+            book.getCheckouts().add(newCheckout);
+            bookRepository.save(book);
+        }
     }
 
     @Transactional
@@ -272,6 +276,10 @@ public class BookService {
         Review newReview = convertToReview(reviewDTO);
 
         User user = getUserFromRepository(userEmail);
+        if (user == null) {
+            ErrorsUtil.returnUserError("User with such email is not found.", null, HttpStatus.NOT_FOUND);
+            return null; // This line is technically unreachable if ErrorsUtil throws an exception
+        }
 
         Book book = getBookFromRepository(bookId);
         Optional<Review> review = reviewRepository.findByUserEmailAndReviewedBook(userEmail, book);

@@ -36,6 +36,10 @@ spring:
     clients:
       imperative:
         factory: jdk
+  # Virtual Threads Configuration
+  threads:
+    virtual:
+      enabled: true
 
 # OpenAPI / Swagger Configuration
 springdoc:
@@ -67,14 +71,26 @@ app:
     # 默认上传目录
     base-path: "bookstore"
 
+# Observability Configuration
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  otlp:
+    metrics:
+      export:
+        enabled: false
 
 # Logging Configuration
-logging:
-  level:
-    # Suppress the AuthenticationProvider warning
-    "[org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer]": ERROR
+# logging:
+#   level:
+    # Enable micrometer logging
+    # "[io.micrometer]": DEBUG
+    # "[org.springframework]": DEBUG
+    # "[org.springframework.boot.autoconfigure]": DEBUG
+    # "[org.springframework.boot.actuate.autoconfigure.tracing]": DEBUG

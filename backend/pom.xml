@@ -92,10 +92,18 @@
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
-    <!-- micrometer -->
+
+    <!-- micrometer tracing bridge for OpenTelemetry -->
+    <!-- https://spring.io/blog/2025/11/18/opentelemetry-with-spring-boot -->
     <dependency>
-      <groupId>io.micrometer</groupId>
-      <artifactId>micrometer-registry-prometheus</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-opentelemetry</artifactId>
+    </dependency>
+    <!-- logstash encoder for structured JSON logging -->
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <version>9.0</version>
     </dependency>
     <!-- jwt -->
     <dependency>
