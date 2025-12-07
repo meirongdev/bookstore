@@ -31,6 +31,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
       GITHUB_TOKEN: ${GITHUB_TOKEN}
+      MANAGEMENT_METRICS_EXPORT_OTLP_ENDPOINT: "http://tempo:4318/v1/metrics"
+      # MANAGEMENT_METRICS_EXPORT_OTLP_ENABLED: "true"
     networks:
       - bookstore-network
     depends_on:
@@ -80,27 +82,89 @@ services:
     depends_on:
       - bookstore-springboot-backend
 
-  # Development frontend (hot-reload). Only started when --profile dev is used.
-  bookstore-react-frontend-dev:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    image: bookstore-frontend:dev
-    container_name: bookstore-react-frontend-dev
-    profiles:
-      - dev
-    ports:
-      - "5173:5173"
+  # Observability stack
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - prometheus_data:/prometheus
+      - ./ops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    ports:
+      - "9090:9090"
     networks:
       - bookstore-network
     depends_on:
       - bookstore-springboot-backend
 
+  grafana:
+    image: grafana/grafana:12.3.0
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./ops/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./ops/grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3000:3000"
+    networks:
+      - bookstore-network
+    depends_on:
+      - prometheus
+      # - loki
+      # - tempo
+
+  # loki:
+  #   image: grafana/loki:2.9.17
+  #   container_name: loki
+  #   ports:
+  #     - "3100:3100"
+  #   command: -config.file=/etc/loki/local-config.yaml
+  #   volumes:
+  #     - loki_data:/loki
+  #     - ./ops/loki/local-config.yaml:/etc/loki/local-config.yaml:ro
+  #   networks:
+  #     - bookstore-network
+  #   restart: unless-stopped
+
+  # promtail:
+  #   image: grafana/promtail:2.9.17
+  #   container_name: promtail
+  #   volumes:
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - /var/log:/var/log:ro
+  #     - ./ops/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+  #   command: -config.file=/etc/promtail/config.yml
+  #   networks:
+  #     - bookstore-network
+  #   depends_on:
+  #     - loki
+  #   restart: unless-stopped
+
+  # tempo:
+  #   image: grafana/tempo:2.9.0
+  #   container_name: tempo
+  #   volumes:
+  #     - ./ops/tempo/tempo-local.yaml:/etc/tempo/local-config.yaml:ro
+  #     - tempo_data:/var/tempo/traces
+  #   command: -config.file=/etc/tempo/local-config.yaml
+  #   ports:
+  #     - "9411:9411" # jaeger HTTP
+  #     - "4317:4317" # OTLP gRPC
+  #     - "4318:4318" # OTLP HTTP
+  #   networks:
+  #     - bookstore-network
+  #   restart: unless-stopped
+
 volumes:
   bookstore_postgres:
+  prometheus_data:
+  # grafana_data:
+  # loki_data:
+  # tempo_data:
 
 networks:
   bookstore-network:

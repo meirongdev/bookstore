@@ -99,6 +99,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-opentelemetry</artifactId>
     </dependency>
+    <!-- Prometheus -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+    </dependency>
     <!-- logstash encoder for structured JSON logging -->
     <dependency>
       <groupId>net.logstash.logback</groupId>

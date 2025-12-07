@@ -10,10 +10,10 @@ spring:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/bookstore_db}
     username: ${POSTGRES_USER:bookstoreadmin}
     password: ${POSTGRES_PASSWORD:bookstoreadmin}
-  sql:
-    init:
-      # Disable SQL initialization - now using Liquibase
-      mode: never
+  # sql:
+  #   init:
+  #     # Disable SQL initialization - now using Liquibase
+  #     mode: never
   jpa:
     hibernate:
       ddl-auto: none
@@ -73,18 +73,37 @@ app:
 
 # Observability Configuration
 management:
+  # server:
+  #   port: ${MANAGEMENT_PORT:8081} # optional separate management port (useful in container setups)
   endpoints:
     web:
       exposure:
         include: "*"
+      base-path: /actuator
+
   prometheus:
     metrics:
       export:
         enabled: true
+  tracing:
+    export:
+      enabled: false
   otlp:
     metrics:
       export:
         enabled: false
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+    # add custom labels for all metrics
+    tags:
+      application: ${spring.application.name:bookstore}
+      env: ${ENV:dev}
+
+  # tracing:
+  #   sampling:
+  #     probability: 1.0
 
 # Logging Configuration
 # logging:
