@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -33,6 +33,110 @@
       "panels": [],
       "title": "Basic Statistics",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "instance count for commit id",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 98,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [
+            "last"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "text": {},
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "commit",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "count by (commit) (\n  app_git_commit{application=~\"$application\", env=~\"$env\"}\n)",
+          "format": "table",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Version",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "mode": "reduceFields",
+            "reducers": [
+              "last"
+            ]
+          }
+        }
+      ],
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -73,7 +177,7 @@
       "gridPos": {
         "h": 3,
         "w": 6,
-        "x": 0,
+        "x": 12,
         "y": 1
       },
       "id": 52,
@@ -128,6 +232,86 @@
       },
       "fieldConfig": {
         "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeFromNow"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 12,
+        "y": 4
+      },
+      "id": 56,
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "first"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "avg(process_start_time_seconds{application=\"$application\", instance=~\"$instance\"})*1000",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "metric": "",
+          "refId": "A",
+          "step": 14400
+        }
+      ],
+      "title": "Start time",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
           "decimals": 1,
           "mappings": [
             {
@@ -166,8 +350,8 @@
       "gridPos": {
         "h": 6,
         "w": 5,
-        "x": 6,
-        "y": 1
+        "x": 0,
+        "y": 9
       },
       "id": 58,
       "maxDataPoints": 100,
@@ -262,8 +446,8 @@
       "gridPos": {
         "h": 6,
         "w": 5,
-        "x": 11,
-        "y": 1
+        "x": 5,
+        "y": 9
       },
       "id": 60,
       "maxDataPoints": 100,
@@ -367,8 +551,8 @@
       "gridPos": {
         "h": 6,
         "w": 8,
-        "x": 16,
-        "y": 1
+        "x": 10,
+        "y": 9
       },
       "id": 66,
       "options": {
@@ -413,86 +597,6 @@
       ],
       "title": "Process Open Files",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "dateTimeFromNow"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 6,
-        "x": 0,
-        "y": 4
-      },
-      "id": 56,
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "first"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "avg(process_start_time_seconds{application=\"$application\", instance=~\"$instance\"})*1000",
-          "format": "time_series",
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "",
-          "metric": "",
-          "refId": "A",
-          "step": 14400
-        }
-      ],
-      "title": "Start time",
-      "type": "stat"
     },
     {
       "datasource": {
@@ -560,7 +664,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 15
       },
       "id": 95,
       "options": {
@@ -676,7 +780,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 15
       },
       "id": 96,
       "options": {
@@ -732,7 +836,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 22
       },
       "id": 48,
       "panels": [
@@ -802,7 +906,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 156
+            "y": 195
           },
           "id": 85,
           "options": {
@@ -931,7 +1035,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 164
+            "y": 203
           },
           "id": 88,
           "options": {
@@ -1062,7 +1166,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 180
+            "y": 219
           },
           "id": 50,
           "options": {
@@ -1168,7 +1272,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 180
+            "y": 219
           },
           "id": 80,
           "options": {
@@ -1218,7 +1322,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 188
+            "y": 227
           },
           "id": 82,
           "options": {
@@ -1266,7 +1370,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 188
+            "y": 227
           },
           "id": 83,
           "options": {
@@ -1314,7 +1418,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 195
+            "y": 234
           },
           "id": 68,
           "options": {
@@ -1374,7 +1478,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 195
+            "y": 234
           },
           "id": 78,
           "options": {
@@ -1417,7 +1521,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 23
       },
       "id": 72,
       "panels": [
@@ -1528,7 +1632,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 16
+            "y": 55
           },
           "id": 74,
           "options": {
@@ -1674,7 +1778,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 16
+            "y": 55
           },
           "id": 76,
           "options": {
@@ -1723,7 +1827,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 24
       },
       "id": 34,
       "panels": [
@@ -1766,7 +1870,7 @@
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 215
+            "y": 254
           },
           "id": 44,
           "maxDataPoints": 100,
@@ -1891,7 +1995,7 @@
             "h": 8,
             "w": 20,
             "x": 4,
-            "y": 215
+            "y": 254
           },
           "id": 36,
           "options": {
@@ -1991,7 +2095,7 @@
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 219
+            "y": 258
           },
           "id": 46,
           "maxDataPoints": 100,
@@ -2095,7 +2199,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 223
+            "y": 262
           },
           "id": 38,
           "options": {
@@ -2195,7 +2299,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 223
+            "y": 262
           },
           "id": 42,
           "options": {
@@ -2295,7 +2399,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 223
+            "y": 262
           },
           "id": 40,
           "options": {
@@ -2339,7 +2443,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 25
       },
       "id": 18,
       "panels": [
@@ -2409,7 +2513,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 230
+            "y": 269
           },
           "id": 4,
           "options": {
@@ -2510,7 +2614,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 230
+            "y": 269
           },
           "id": 97,
           "options": {
@@ -2605,7 +2709,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 238
+            "y": 277
           },
           "id": 2,
           "options": {
@@ -2669,7 +2773,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 26
       },
       "id": 8,
       "panels": [
@@ -2739,7 +2843,7 @@
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 275
+            "y": 314
           },
           "id": 6,
           "options": {
@@ -2847,7 +2951,7 @@
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 275
+            "y": 314
           },
           "id": 10,
           "options": {
@@ -2955,7 +3059,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 282
+            "y": 321
           },
           "id": 14,
           "options": {
@@ -3063,7 +3167,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 282
+            "y": 321
           },
           "id": 16,
           "options": {
@@ -3171,7 +3275,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 282
+            "y": 321
           },
           "id": 20,
           "options": {
@@ -3226,11 +3330,30 @@
     "list": [
       {
         "current": {
+          "text": "dev",
+          "value": "dev"
+        },
+        "definition": "label_values(env)",
+        "hide": 2,
+        "name": "env",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(env)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
           "text": "bookstore",
           "value": "bookstore"
         },
         "datasource": "PBFA97CFB590B2093",
         "definition": "",
+        "description": "",
         "includeAll": false,
         "label": "Application",
         "name": "application",
@@ -3330,5 +3453,5 @@
   "timezone": "",
   "title": "SpringBoot APM Dashboard",
   "uid": "X034JGT7Gz",
-  "version": 9
+  "version": 3
 }

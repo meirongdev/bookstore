@@ -80,6 +80,11 @@ management:
       exposure:
         include: "*"
       base-path: /actuator
+  info:
+    java:
+      enabled: true
+    env:
+      enabled: true
 
   prometheus:
     metrics:

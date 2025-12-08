@@ -157,3 +157,21 @@ This is a technology demonstration project, mainly for learning and demonstratio
 ## 📄 License
 
 This project is for technology demonstration and learning purposes only.
+
+## Starting the Project
+
+### Docker Compose
+
+```bash
+docker-compose up -d postgres
+make migrate
+make build-backend
+make build-frontend
+make up
+```
+
+- frontend: http://localhost:8000
+- backend: http://localhost:8080
+- grafana: http://localhost:3000
+- prometheus: http://localhost:9090
+

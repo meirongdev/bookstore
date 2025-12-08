@@ -35,7 +35,7 @@ env-check:
 		echo "Warning: $(ENV_FILE) not found. Create .env with required variables (POSTGRES_*, JWT_SECRET_KEY, STRIPE_SECRET_KEY)"; \
 	fi
 
-# Build backend jar and docker image (supports dockerfile or buildpack mode)
+# Build backend jar and image
 build-backend:
 	@echo "==> build backend via spring-boot:build-image"
 	@(cd $(BACKEND_DIR) && mvn -DskipTests spring-boot:build-image -Dspring-boot.build-image.imageName=$(BACKEND_IMAGE))
